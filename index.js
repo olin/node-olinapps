@@ -1,5 +1,4 @@
-var request = require('request')
-  , olinapps = require('olinapps');
+var request = require('request');
 
 /**
  * Authentication
