@@ -82,7 +82,7 @@ function middleware (req, res, next) {
 
 module.exports = {
   loadSession: loadSession,
-  getSessionUser: getSessionUser,
+  user: getSessionUser,
   login: login,
   logout: logout,
   middleware: middleware
