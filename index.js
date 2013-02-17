@@ -61,9 +61,7 @@ function redirectLogin (req, res, next) {
 }
 
 function middleware (req, res, next) {
-  if (getSessionUser(req)) {
-    next();
-  } else if ('sessionid' in req.query) {
+  if (!getSessionUser(req) && 'sessionid' in req.query) {
     loadSession(req, req.query.sessionid, function (success) {
       if (success) {
         res.redirect('/');
@@ -72,7 +70,15 @@ function middleware (req, res, next) {
       }
     });
   } else {
+    next();
+  }
+}
+
+function loginRequired (req, res, next) {
+  if (!getSessionUser(req)) {
     redirectLogin(req, res, next);
+  } else {
+    next();
   }
 }
 
@@ -85,5 +91,6 @@ module.exports = {
   user: getSessionUser,
   login: login,
   logout: logout,
-  middleware: middleware
+  middleware: middleware,
+  loginRequired: loginRequired
 };
