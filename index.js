@@ -57,7 +57,7 @@ function logout (req, res) {
 }
 
 function redirectLogin (req, res, next) {
-  res.redirect('http://olinapps.com/external?callback=http://' + req.app.get('host') + '/login');
+  res.redirect('http://olinapps.com/external?callback=http://' + req.headers.host + '/login');
 }
 
 function middleware (req, res, next) {
