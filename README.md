@@ -4,13 +4,13 @@
 
 In the top of your file:
 
-```
+```js
 var olinapps = require('olinapps');
 ```
 
 In your express app, right after your `app.configure`:
 
-```
+```js
 /**
  * Authentication
  */
@@ -23,7 +23,7 @@ app.all('/*', olinapps.loginRequired);
 
 Remove the `loginRequired` line if logging in is optional. Then in any route:
 
-```
+```js
 app.get('/', function (req, res) {
   var user = olinapps.user(req);
   console.log(user);
@@ -33,7 +33,7 @@ app.get('/', function (req, res) {
 
 Yields:
 
-```
+```js
 { id: 'timothy.ryan',
   created: 1354933883,
   domain: 'students.olin.edu',
