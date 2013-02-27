@@ -98,7 +98,7 @@ function loginRequired (req, res, next) {
  * Directory
  */
 
-directory: {
+var directory = {
   me: function (req, next) {
     request('http://directory.olinapps.com/api/me', {
       qs: {"sessionid": getSessionId(req)}
@@ -109,7 +109,7 @@ directory: {
         next(err || e, null);
       }
     });
-  }
+  },
 
   people: function (req, next) {
     request('http://directory.olinapps.com/api/people', {
@@ -128,7 +128,7 @@ directory: {
  * Lists
  */
 
-lists: {
+var lists = {
   list: function (req, list, text, next) {
     request('http://lists.olinapps.com/api/lists/' + list, {
       qs: {
@@ -142,7 +142,7 @@ lists: {
         next(err || e, null);
       }
     });
-  }
+  },
 
   messages: function (req, ids, next) {
     request('http://lists.olinapps.com/api/messages', {
