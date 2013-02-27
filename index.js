@@ -1,4 +1,5 @@
-var request = require('request');
+var request = require('request')
+  , async = require('async');
 
 /**
  * Authentication
@@ -123,6 +124,26 @@ var directory = {
  */
 
 var lists = {
+  search: function (req, list, keywords, callback) {
+    lists.list(req, list, keywords, function (err, json) {
+      // Get each page in order.
+      var i = 1, groups = json.groups;
+      async.mapSeries(groups, function (json, next) {
+        request({
+          url: json.url,
+          json: true
+        }, function (err, res, body) {
+          console.error('Completed group ' + (i++) + '/' + groups.length)
+          next(err, body);
+        })
+      }, function (err, pages) {
+        callback(err, Array.prototype.concat.apply([], (pages || []).map(function (p) {
+          return p.messages;
+        })));
+      });
+    })
+  },
+
   list: function (req, list, text, next) {
     request('http://lists.olinapps.com/api/lists/' + list, {
       qs: {

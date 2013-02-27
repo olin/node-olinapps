@@ -60,10 +60,8 @@ app.get('/people', function (req, res) {
 });
 
 app.get('/list', function (req, res) {
-  olinapps.lists.list(req, 'helpme', 'ride to eliot', function (err, json) {
-    olinapps.lists.messages(req, json.groups[0].ids, function (err, json) {
-      res.json(json);
-    })
+  olinapps.lists.search(req, 'helpme', 'ride to eliot', function (err, messages) {
+    res.json(messages);
   });
 });
 ```
@@ -93,8 +91,7 @@ APIs:
 olinapps.directory.me(req, callback)
 olinapps.directory.people(req, callback)
 
-olinapps.lists.list(req, name, keywords, callback)
-olinapps.lists.messages(req, ids, callback)
+olinapps.lists.search(req, list_name, keywords, callback)
 ```
 
 ## Example
