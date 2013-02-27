@@ -1,4 +1,4 @@
-# Olinapps
+# node-olinapps
 
 `npm install olinapps`
 
@@ -18,6 +18,7 @@ In your express app, right after your `app.configure`:
 app.post('/login', olinapps.login);
 app.all('/logout', olinapps.logout);
 app.all('/*', olinapps.middleware);
+app.all('/api/*', olinapps.loginRequiredJSON); // (optional) login required, no redirect, returns 401
 app.all('/*', olinapps.loginRequired);
 ```
 
@@ -39,6 +40,61 @@ Yields:
   domain: 'students.olin.edu',
   username: 'timothy.ryan',
   email: 'timothy.ryan@students.olin.edu' }
+```
+
+## Directory & Mailing Lists
+
+You can request information from the Olin Directory or Mailing List APIs.
+
+```
+app.get('/me', function (req, res) {
+  olinapps.directory.me(req, function (err, json) {
+    res.json(json);
+  });
+});
+
+app.get('/people', function (req, res) {
+  olinapps.directory.people(req, function (err, json) {
+    res.json(json);
+  });
+});
+
+app.get('/list', function (req, res) {
+  olinapps.lists.list(req, 'helpme', 'ride to eliot', function (err, json) {
+    olinapps.lists.messages(req, json.groups[0].ids, function (err, json) {
+      res.json(json);
+    })
+  });
+});
+```
+
+## API
+
+Session:
+
+```
+olinapps.user(req);
+olinapps.sessionid(req);
+```
+
+Middleware:
+
+```
+olinapps.login
+olinapps.logout
+olinapps.middleware
+olinapps.loginRequired
+olinapps.loginRequiredJSON
+```
+
+APIs:
+
+```
+olinapps.directory.me(req, callback)
+olinapps.directory.people(req, callback)
+
+olinapps.lists.list(req, name, keywords, callback)
+olinapps.lists.messages(req, ids, callback)
 ```
 
 ## Example

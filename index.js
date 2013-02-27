@@ -28,6 +28,10 @@ function getEmail (user) {
   return user && (String(user.id) + '@' + String(user.domain));
 }
 
+function getSessionId (req) {
+  return req.session.sessionid;
+}
+
 function getSessionUser (req) {
   if (req.session.user) {
     var user = JSON.parse(JSON.stringify(req.session.user));
@@ -74,6 +78,14 @@ function middleware (req, res, next) {
   }
 }
 
+function loginRequiredJSON (req, res, next) {
+  if (!getSessionUser(req)) {
+    res.json({error: true, message: 'Login required.'}, 401);
+  } else {
+    next();
+  }
+}
+
 function loginRequired (req, res, next) {
   if (!getSessionUser(req)) {
     redirectLogin(req, res, next);
@@ -83,14 +95,83 @@ function loginRequired (req, res, next) {
 }
 
 /**
+ * Directory
+ */
+
+directory: {
+  me: function (req, next) {
+    request('http://directory.olinapps.com/api/me', {
+      qs: {"sessionid": getSessionId(req)}
+    }, function (err, res, body) {
+      try {
+        next(err, JSON.parse(body));
+      } catch (e) {
+        next(err || e, null);
+      }
+    });
+  }
+
+  people: function (req, next) {
+    request('http://directory.olinapps.com/api/people', {
+      qs: {"sessionid": getSessionId(req)}
+    }, function (err, res, body) {
+      try {
+        next(err, JSON.parse(body));
+      } catch (e) {
+        next(err || e, null);
+      }
+    });
+  }
+};
+
+/**
+ * Lists
+ */
+
+lists: {
+  list: function (req, list, text, next) {
+    request('http://lists.olinapps.com/api/lists/' + list, {
+      qs: {
+        "sessionid": getSessionId(req),
+        "text": text
+      }
+    }, function (err, res, body) {
+      try {
+        next(err, JSON.parse(body));
+      } catch (e) {
+        next(err || e, null);
+      }
+    });
+  }
+
+  messages: function (req, ids, next) {
+    request('http://lists.olinapps.com/api/messages', {
+      qs: {
+        "sessionid": getSessionId(req),
+        ids: ids
+      }
+    }, function (err, res, body) {
+      try {
+        next(err, JSON.parse(body));
+      } catch (e) {
+        next(err || e, null);
+      }
+    });
+  }
+};
+
+/**
  * Exports
  */
 
 module.exports = {
   loadSession: loadSession,
   user: getSessionUser,
+  sessionid: getSessionId,
   login: login,
   logout: logout,
   middleware: middleware,
-  loginRequired: loginRequired
+  loginRequiredJSON: loginRequiredJSON,
+  loginRequired: loginRequired,
+  directory: directory
 };
