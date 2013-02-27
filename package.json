@@ -1,6 +1,6 @@
 {
   "name": "olinapps",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Module for Olinapps.com and other Olin College functionality.",
   "main": "index.js",
   "dependencies": {

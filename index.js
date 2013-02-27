@@ -68,7 +68,7 @@ function middleware (req, res, next) {
   if (!getSessionUser(req) && 'sessionid' in req.query) {
     loadSession(req, req.query.sessionid, function (success) {
       if (success) {
-        res.redirect('/');
+        next();
       } else {
         res.send('Invalid session token: ' + JSON.stringify(req.query.sessionid));
       }
@@ -101,25 +101,19 @@ function loginRequired (req, res, next) {
 var directory = {
   me: function (req, next) {
     request('http://directory.olinapps.com/api/me', {
-      qs: {"sessionid": getSessionId(req)}
+      qs: {"sessionid": getSessionId(req)},
+      json: true
     }, function (err, res, body) {
-      try {
-        next(err, JSON.parse(body));
-      } catch (e) {
-        next(err || e, null);
-      }
+      next(err, body);
     });
   },
 
   people: function (req, next) {
     request('http://directory.olinapps.com/api/people', {
-      qs: {"sessionid": getSessionId(req)}
+      qs: {"sessionid": getSessionId(req)},
+      json: true
     }, function (err, res, body) {
-      try {
-        next(err, JSON.parse(body));
-      } catch (e) {
-        next(err || e, null);
-      }
+      next(err, body);
     });
   }
 };
@@ -134,13 +128,10 @@ var lists = {
       qs: {
         "sessionid": getSessionId(req),
         "text": text
-      }
+      },
+      json: true
     }, function (err, res, body) {
-      try {
-        next(err, JSON.parse(body));
-      } catch (e) {
-        next(err || e, null);
-      }
+      next(err, body);
     });
   },
 
@@ -149,13 +140,10 @@ var lists = {
       qs: {
         "sessionid": getSessionId(req),
         ids: ids
-      }
+      },
+      json: true
     }, function (err, res, body) {
-      try {
-        next(err, JSON.parse(body));
-      } catch (e) {
-        next(err || e, null);
-      }
+      next(err, body);
     });
   }
 };
@@ -173,5 +161,6 @@ module.exports = {
   middleware: middleware,
   loginRequiredJSON: loginRequiredJSON,
   loginRequired: loginRequired,
-  directory: directory
+  directory: directory,
+  lists: lists
 };
