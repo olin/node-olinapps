@@ -96,4 +96,4 @@ olinapps.lists.search(req, list_name, keywords, callback)
 
 ## Example
 
-See the source for [quotes.olinapps.com](http://github.com/ohack/olinapps-quotes) for an example.
+See the source for [quotes.olinapps.com](http://github.com/olin/olinapps-quotes) for an example.
